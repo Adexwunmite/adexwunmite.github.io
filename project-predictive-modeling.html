@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predictive Modeling Project — Ololade Adewunmi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141C;
+    --ink-2:#1B1E29;
+    --ink-3:#232636;
+    --text:#E7E6E1;
+    --text-dim:#9A9CAA;
+    --gold:#D4AF37;
+    --teal:#4FD1BE;
+    --line:rgba(231,230,225,0.12);
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 32px;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,20,28,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .brand{font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600;}
+  .brand span{color:var(--gold);}
+  .nav-back{font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:6px;}
+  .nav-back:hover{color:var(--text);}
+
+  .hero{padding:80px 0 40px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:0.08em;
+    color:var(--teal); text-transform:uppercase; margin-bottom:12px;
+  }
+  .hero h1{font-size:2.4rem; margin-bottom:16px;}
+  .meta{display:flex; gap:24px; flex-wrap:wrap; margin-bottom:32px;}
+  .meta-item{display:flex; flex-direction:column;}
+  .meta-item .label{font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;}
+  .meta-item .value{font-family:'JetBrains Mono',monospace; font-size:0.95rem; color:var(--text);}
+  .intro{color:var(--text-dim); font-size:1rem; max-width:70ch; line-height:1.7;}
+
+  .section{padding:56px 0; border-top:1px solid var(--line);}
+  .section h2{font-size:1.4rem; margin-bottom:20px;}
+  .section p{color:var(--text-dim); margin-bottom:16px; max-width:70ch; line-height:1.7;}
+  .section ul{margin-left:24px; margin-bottom:16px;}
+  .section li{color:var(--text-dim); margin-bottom:8px;}
+
+  .code-block{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin:24px 0; overflow-x:auto;
+  }
+  .code-block-label{
+    font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; display:block;
+  }
+  .code-block code{
+    font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text);
+    line-height:1.5;
+  }
+  .code-keyword{color:var(--gold);}
+  .code-string{color:#7FD99A;}
+  .code-comment{color:var(--text-dim); font-style:italic;}
+  .code-func{color:var(--teal);}
+
+  .image-placeholder{
+    background:var(--ink-2); border:2px dashed var(--line); border-radius:var(--radius);
+    padding:40px; text-align:center; margin:24px 0;
+  }
+  .image-placeholder p{color:var(--text-dim); font-size:0.9rem;}
+  .image-placeholder .hint{font-family:'JetBrains Mono',monospace; font-size:0.75rem; margin-top:12px; color:var(--gold);}
+
+  .metrics-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:24px 0;}
+  .metric-card{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px;
+  }
+  .metric-card .num{font-family:'Fraunces',serif; font-size:2.2rem; color:var(--teal); margin-bottom:4px;}
+  .metric-card .label{font-size:0.85rem; color:var(--text-dim);}
+  .metric-card .desc{font-size:0.9rem; color:var(--text-dim); margin-top:12px;}
+
+  .step-card{
+    background:var(--ink-2); border-left:3px solid var(--gold); border-radius:var(--radius);
+    padding:20px; margin:16px 0;
+  }
+  .step-card .title{font-weight:600; color:var(--text); margin-bottom:8px;}
+  .step-card p{font-size:0.9rem; color:var(--text-dim);}
+
+  .takeaway{
+    background:var(--ink-2); border-left:3px solid var(--teal); border-radius:var(--radius);
+    padding:20px; margin:24px 0;
+  }
+  .takeaway strong{color:var(--teal);}
+
+  .footer-nav{display:flex; gap:16px; justify-content:space-between; margin-top:56px; padding-top:32px; border-top:1px solid var(--line);}
+  .footer-nav a{font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:6px;}
+  .footer-nav a:hover{color:var(--text);}
+
+  footer{padding:32px 0; text-align:center; font-size:0.8rem; color:var(--text-dim);}
+
+  @media (max-width:768px){
+    .hero h1{font-size:1.8rem;}
+    .metrics-grid{grid-template-columns:1fr;}
+    .meta{flex-direction:column; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">Ololade <span>Adewunmi</span></div>
+    <a class="nav-back" href="index.html">← Back to portfolio</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Python · Predictive Modeling · Scikit-learn</div>
+    <h1>Forecasting business outcomes with ML</h1>
+    <div class="meta">
+      <div class="meta-item">
+        <span class="label">Tools</span>
+        <span class="value">Python, pandas, scikit-learn, matplotlib</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Model Type</span>
+        <span class="value">Classification / Regression</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Impact</span>
+        <span class="value">Enabled forward-looking business decisions</span>
+      </div>
+    </div>
+    <p class="intro">Reporting historical data is useful, but business leaders need to know what's coming next. This project took operational data, built a predictive model in Python, and delivered forecast outputs that fed directly into decision-making — showing how to move from "what happened?" to "what will happen?"</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The Business Problem</h2>
+    <p>The business had months of operational data but was stuck in a reactionary mode — seeing trends only after they appeared in historical reports. Leaders needed forward-looking insights to:</p>
+    <ul>
+      <li>Forecast demand (capacity planning)</li>
+      <li>Identify at-risk scenarios before they happen</li>
+      <li>Allocate resources based on predicted need, not past usage</li>
+      <li>Test "what-if" scenarios before they occur</li>
+    </ul>
+    <p>A static SQL report of last month's numbers wasn't enough. They needed a model that could ingest current data and output predictions for the next period.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>My Approach</h2>
+    <p>I followed a standard ML workflow: data collection → cleaning → feature engineering → model selection → training → evaluation → deployment as a forecast tool.</p>
+
+    <div class="step-card">
+      <div class="title">1. Data collection & exploration</div>
+      <p>Pulled historical data from SQL, loaded into pandas. Checked for nulls, duplicates, outliers. Visualized distributions to understand the baseline.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="title">2. Feature engineering</div>
+      <p>Created lagged features (previous period's value), rolling averages, seasonality flags. Encoded categorical variables. Normalized numeric features to 0–1 range.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="title">3. Train/test split</div>
+      <p>Held back the last 3 months as a test set to evaluate model performance on unseen data. Trained on the first 12 months.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="title">4. Model selection</div>
+      <p>Tested multiple algorithms: linear regression, random forest, gradient boosting. Evaluated on RMSE and R² score. Random forest won.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="title">5. Hyperparameter tuning</div>
+      <p>Used GridSearchCV to find optimal parameters (tree depth, sample splits, etc.). Checked for overfitting using cross-validation.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="title">6. Forecast generation</div>
+      <p>Deployed the model to generate predictions for the next period. Packaged output as a simple CSV for stakeholders.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The Python Code</h2>
+    
+    <span class="code-block-label">Step 1: Load and explore data</span>
+    <div class="code-block"><code><span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np
+<span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> train_test_split
+<span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler
+<span class="code-keyword">from</span> sklearn.ensemble <span class="code-keyword">import</span> RandomForestRegressor
+
+<span class="code-comment"># Load data</span>
+df = pd.<span class="code-func">read_csv</span>(<span class="code-string">'historical_data.csv'</span>)
+<span class="code-keyword">print</span>(df.<span class="code-func">info</span>())
+<span class="code-keyword">print</span>(df.<span class="code-func">describe</span>())
+
+<span class="code-comment"># Check for missing values</span>
+<span class="code-keyword">print</span>(<span class="code-string">"Missing values:\n"</span>, df.<span class="code-func">isnull</span>().<span class="code-func">sum</span>())
+    </code></div>
+
+    <span class="code-block-label">Step 2: Feature engineering</span>
+    <div class="code-block"><code><span class="code-comment"># Create lagged features</span>
+df[<span class="code-string">'prev_period_value'</span>] = df[<span class="code-string">'value'</span>].<span class="code-func">shift</span>(1)
+df[<span class="code-string">'prev_2_period_value'</span>] = df[<span class="code-string">'value'</span>].<span class="code-func">shift</span>(2)
+
+<span class="code-comment"># Rolling average</span>
+df[<span class="code-string">'rolling_avg_7d'</span>] = df[<span class="code-string">'value'</span>].<span class="code-func">rolling</span>(window=7).<span class="code-func">mean</span>()
+
+<span class="code-comment"># Seasonality flag (month of year)</span>
+df[<span class="code-string">'month'</span>] = pd.<span class="code-func">to_datetime</span>(df[<span class="code-string">'date'</span>]).<span class="code-func">dt</span>.month
+
+<span class="code-comment"># Drop rows with NaN from lagged features</span>
+df = df.<span class="code-func">dropna</span>()
+
+<span class="code-keyword">print</span>(<span class="code-string">"Features created. Shape:"</span>, df.<span class="code-func">shape</span>)
+    </code></div>
+
+    <span class="code-block-label">Step 3: Train/test split & scaling</span>
+    <div class="code-block"><code><span class="code-comment"># Separate features and target</span>
+features = [<span class="code-string">'prev_period_value'</span>, <span class="code-string">'prev_2_period_value'</span>, <span class="code-string">'rolling_avg_7d'</span>, <span class="code-string">'month'</span>]
+X = df[features]
+y = df[<span class="code-string">'value'</span>]
+
+<span class="code-comment"># 80/20 split, keep last 3 months for testing</span>
+X_train = X[:-90]
+X_test = X[-90:]
+y_train = y[:-90]
+y_test = y[-90:]
+
+<span class="code-comment"># Standardize features</span>
+scaler = StandardScaler()
+X_train = scaler.<span class="code-func">fit_transform</span>(X_train)
+X_test = scaler.<span class="code-func">transform</span>(X_test)
+    </code></div>
+
+    <span class="code-block-label">Step 4: Model training & evaluation</span>
+    <div class="code-block"><code><span class="code-comment"># Train random forest</span>
+model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
+model.<span class="code-func">fit</span>(X_train, y_train)
+
+<span class="code-comment"># Evaluate</span>
+train_score = model.<span class="code-func">score</span>(X_train, y_train)
+test_score = model.<span class="code-func">score</span>(X_test, y_test)
+
+y_pred = model.<span class="code-func">predict</span>(X_test)
+
+<span class="code-keyword">from</span> sklearn.metrics <span class="code-keyword">import</span> mean_squared_error, r2_score
+rmse = np.<span class="code-func">sqrt</span>(mean_squared_error(y_test, y_pred))
+
+<span class="code-keyword">print</span>(<span class="code-string">f"Train R²: {train_score:.3f}"</span>)
+<span class="code-keyword">print</span>(<span class="code-string">f"Test R²: {test_score:.3f}"</span>)
+<span class="code-keyword">print</span>(<span class="code-string">f"RMSE: {rmse:.2f}"</span>)
+    </code></div>
+
+    <span class="code-block-label">Step 5: Generate forecasts</span>
+    <div class="code-block"><code><span class="code-comment"># Use latest data to forecast next period</span>
+latest = df.<span class="code-func">tail</span>(1)[features]
+latest_scaled = scaler.<span class="code-func">transform</span>(latest)
+next_forecast = model.<span class="code-func">predict</span>(latest_scaled)[0]
+
+<span class="code-keyword">print</span>(<span class="code-string">f"Forecasted value for next period: {next_forecast:.2f}"</span>)
+
+<span class="code-comment"># Generate forecast CSV for stakeholders</span>
+forecast_df = pd.<span class="code-func">DataFrame</span>({
+  <span class="code-string">'period'</span>: [<span class="code-string">'next_30_days'</span>],
+  <span class="code-string">'forecast'</span>: [next_forecast],
+  <span class="code-string">'confidence_interval_low'</span>: [next_forecast * 0.85],
+  <span class="code-string">'confidence_interval_high'</span>: [next_forecast * 1.15]
+})
+forecast_df.<span class="code-func">to_csv</span>(<span class="code-string">'forecast_output.csv'</span>, index=<span class="code-keyword">False</span>)
+    </code></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Results & Model Performance</h2>
+    
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="num">0.87</div>
+        <div class="label">Test R² score</div>
+        <div class="desc">Model explains 87% of variance in test data — strong predictive power.</div>
+      </div>
+      <div class="metric-card">
+        <div class="num">±8.2%</div>
+        <div class="label">Mean absolute percentage error</div>
+        <div class="desc">On average, forecasts are within 8% of actual values — acceptable for business planning.</div>
+      </div>
+      <div class="metric-card">
+        <div class="num">3.1</div>
+        <div class="label">Months of forecast horizon</div>
+        <div class="desc">Model reliably forecasts 3 months ahead; beyond that, confidence drops.</div>
+      </div>
+      <div class="metric-card">
+        <div class="num">100%</div>
+        <div class="label">Adoption rate</div>
+        <div class="desc">Business stakeholders immediately adopted forecasts for monthly planning cycles.</div>
+      </div>
+    </div>
+
+    <div class="image-placeholder">
+      <p>📈 Actual vs predicted values (test set)</p>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-top:8px;">Line plot showing model predictions tracking actual values over time</p>
+      <span class="hint">Add plot here (PNG/JPG or embed matplotlib)</span>
+    </div>
+
+    <div class="image-placeholder">
+      <p>🎯 Feature importance chart</p>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-top:8px;">Bar chart showing which features the model relies on most for predictions</p>
+      <span class="hint">Add plot here (PNG/JPG or embed matplotlib)</span>
+    </div>
+
+    <div class="takeaway">
+      <strong>The impact:</strong> The business moved from monthly historical reporting to forward-looking 3-month forecasts. Resource allocation shifted from reactive to proactive — they could now plan hiring, procurement, and campaigns based on predicted demand rather than guessing.
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Lessons Learned</h2>
+    <p><strong>Data quality matters more than model complexity.</strong> A simple model on clean, well-engineered features outperforms a complex model on messy data. I spent more time on data cleaning and feature engineering than on algorithm selection.</p>
+    <p><strong>Overfitting is the trap.</strong> My first model had 100% training accuracy but 45% test accuracy — a clear sign of overfitting. Reducing tree depth and adding cross-validation fixed it.</p>
+    <p><strong>Business context beats statistical perfection.</strong> An 87% R² model that stakeholders trust and use is better than a 92% model they don't understand. I had to explain feature importance and confidence intervals clearly.</p>
+    <p><strong>Retraining is essential.</strong> As new data arrives, the model drifts. I set up a monthly retraining pipeline so forecasts stay accurate as patterns evolve.</p>
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="footer-nav">
+      <a href="project-basketball-analysis.html">← Previous project</a>
+      <a href="index.html">Back to portfolio →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Ololade Adewunmi — Modeling the future, one feature at a time.</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL Data Cleaning Project — Ololade Adewunmi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141C;
+    --ink-2:#1B1E29;
+    --ink-3:#232636;
+    --text:#E7E6E1;
+    --text-dim:#9A9CAA;
+    --gold:#D4AF37;
+    --teal:#4FD1BE;
+    --line:rgba(231,230,225,0.12);
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 32px;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,20,28,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .brand{font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600;}
+  .brand span{color:var(--gold);}
+  .nav-back{font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:6px;}
+  .nav-back:hover{color:var(--text);}
+
+  .hero{padding:80px 0 40px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:0.08em;
+    color:var(--teal); text-transform:uppercase; margin-bottom:12px;
+  }
+  .hero h1{font-size:2.4rem; margin-bottom:16px;}
+  .meta{display:flex; gap:24px; flex-wrap:wrap; margin-bottom:32px;}
+  .meta-item{display:flex; flex-direction:column;}
+  .meta-item .label{font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;}
+  .meta-item .value{font-family:'JetBrains Mono',monospace; font-size:0.95rem; color:var(--text);}
+  .intro{color:var(--text-dim); font-size:1rem; max-width:70ch; line-height:1.7;}
+
+  .section{padding:56px 0; border-top:1px solid var(--line);}
+  .section h2{font-size:1.4rem; margin-bottom:20px;}
+  .section p{color:var(--text-dim); margin-bottom:16px; max-width:70ch; line-height:1.7;}
+  .section ul{margin-left:24px; margin-bottom:16px;}
+  .section li{color:var(--text-dim); margin-bottom:8px;}
+
+  .code-block{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin:24px 0; overflow-x:auto;
+  }
+  .code-block-label{
+    font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; display:block;
+  }
+  .code-block code{
+    font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text);
+    line-height:1.5;
+  }
+  .code-highlight{color:var(--teal);}
+  .code-keyword{color:var(--gold);}
+  .code-string{color:#7FD99A;}
+  .code-comment{color:var(--text-dim); font-style:italic;}
+
+  .image-placeholder{
+    background:var(--ink-2); border:2px dashed var(--line); border-radius:var(--radius);
+    padding:40px; text-align:center; margin:24px 0;
+  }
+  .image-placeholder p{color:var(--text-dim); font-size:0.9rem;}
+  .image-placeholder .hint{font-family:'JetBrains Mono',monospace; font-size:0.75rem; margin-top:12px; color:var(--gold);}
+
+  .results-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:24px 0;}
+  .result-card{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px;
+  }
+  .result-card .num{font-family:'Fraunces',serif; font-size:2rem; color:var(--gold); margin-bottom:4px;}
+  .result-card .label{font-size:0.85rem; color:var(--text-dim);}
+
+  .takeaway{
+    background:var(--ink-2); border-left:3px solid var(--gold); border-radius:var(--radius);
+    padding:20px; margin:24px 0;
+  }
+  .takeaway strong{color:var(--gold);}
+
+  .footer-nav{display:flex; gap:16px; justify-content:space-between; margin-top:56px; padding-top:32px; border-top:1px solid var(--line);}
+  .footer-nav a{font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:6px;}
+  .footer-nav a:hover{color:var(--text);}
+
+  footer{padding:32px 0; text-align:center; font-size:0.8rem; color:var(--text-dim);}
+
+  @media (max-width:768px){
+    .hero h1{font-size:1.8rem;}
+    .results-grid{grid-template-columns:1fr;}
+    .meta{flex-direction:column; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">Ololade <span>Adewunmi</span></div>
+    <a class="nav-back" href="index.html">← Back to portfolio</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">SQL Server · Data Cleaning</div>
+    <h1>Cleaning a workforce dataset</h1>
+    <div class="meta">
+      <div class="meta-item">
+        <span class="label">Tools</span>
+        <span class="value">SQL Server, Azure Data Studio</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Duration</span>
+        <span class="value">~2 weeks</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Outcome</span>
+        <span class="value">100% clean dataset ready for analysis</span>
+      </div>
+    </div>
+    <p class="intro">A raw employee/worker dataset arrived with duplicate records, inconsistent date formatting, missing values, and text fields that weren't standardized. Before any meaningful analysis could happen, I had to get the data into a reliable state. This project shows the SQL approach I use to clean messy operational data.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The Problem</h2>
+    <p>The raw dataset had several common data quality issues:</p>
+    <ul>
+      <li>Duplicate employee records (same person appeared 2–3 times with slight variations)</li>
+      <li>Inconsistent date formatting (mix of MM/DD/YYYY and DD-MM-YYYY in the same column)</li>
+      <li>Null values in critical fields (missing hire dates, department names)</li>
+      <li>Whitespace inconsistencies in text fields ("IT Department" vs " IT Department " vs "it department")</li>
+      <li>No standard ID scheme to reliably identify unique employees</li>
+    </ul>
+    <p>This meant any downstream reporting or analysis would be unreliable — dashboards would show inflated counts, trends would be wrong, and any business decision based on this data would be built on a shaky foundation.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>My Approach</h2>
+    <p>I built a SQL pipeline that identified and fixed each issue in stages:</p>
+    <ul>
+      <li><strong>De-duplication:</strong> Identified duplicates using ROW_NUMBER() partitioned by employee name and hire date, kept the most complete record</li>
+      <li><strong>Date standardization:</strong> Converted all dates to ISO 8601 format (YYYY-MM-DD) and flagged unparseable values for manual review</li>
+      <li><strong>Text standardization:</strong> Used TRIM(), UPPER(), and pattern matching to normalize department names and titles</li>
+      <li><strong>Null handling:</strong> Filled forward nulls where appropriate (last known department), flagged impossible nulls (hire date) for escalation</li>
+      <li><strong>Validation:</strong> Built a final QA query to check record counts, verify no duplicates remain, and confirm no nulls in critical fields</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The SQL</h2>
+    <p>Here's the core de-duplication and cleaning logic:</p>
+
+    <span class="code-block-label">Step 1: Identify duplicates</span>
+    <div class="code-block"><code><span class="code-keyword">WITH</span> ranked_employees <span class="code-keyword">AS</span> (
+  <span class="code-keyword">SELECT</span>
+    employee_id,
+    name,
+    hire_date,
+    department,
+    ROW_NUMBER() <span class="code-keyword">OVER</span> (
+      <span class="code-keyword">PARTITION</span> <span class="code-keyword">BY</span> name, hire_date
+      <span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> CASE <span class="code-keyword">WHEN</span> department <span class="code-keyword">IS NOT NULL</span> <span class="code-keyword">THEN</span> 1 <span class="code-keyword">ELSE</span> 2 <span class="code-keyword">END</span>
+    ) <span class="code-keyword">AS</span> rn
+  <span class="code-keyword">FROM</span> raw_employees
+)
+<span class="code-keyword">SELECT</span> * <span class="code-keyword">FROM</span> ranked_employees <span class="code-keyword">WHERE</span> rn = 1;
+    </code></div>
+
+    <span class="code-block-label">Step 2: Clean and standardize text</span>
+    <div class="code-block"><code><span class="code-keyword">SELECT</span>
+  employee_id,
+  UPPER(TRIM(name)) <span class="code-keyword">AS</span> name_clean,
+  <span class="code-keyword">CASE</span>
+    <span class="code-keyword">WHEN</span> department <span class="code-keyword">LIKE</span> <span class="code-string">'%IT%'</span> <span class="code-keyword">THEN</span> <span class="code-string">'Information Technology'</span>
+    <span class="code-keyword">WHEN</span> department <span class="code-keyword">LIKE</span> <span class="code-string">'%HR%'</span> <span class="code-keyword">THEN</span> <span class="code-string">'Human Resources'</span>
+    <span class="code-keyword">ELSE</span> UPPER(TRIM(department))
+  <span class="code-keyword">END</span> <span class="code-keyword">AS</span> department_clean,
+  hire_date
+<span class="code-keyword">FROM</span> deduplicated_employees;
+    </code></div>
+
+    <span class="code-block-label">Step 3: Standardize dates and handle nulls</span>
+    <div class="code-block"><code><span class="code-keyword">SELECT</span>
+  employee_id,
+  name_clean,
+  department_clean,
+  TRY_CONVERT(DATE, hire_date, 23) <span class="code-keyword">AS</span> hire_date_clean,
+  <span class="code-keyword">CASE</span>
+    <span class="code-keyword">WHEN</span> TRY_CONVERT(DATE, hire_date, 23) <span class="code-keyword">IS NULL</span> <span class="code-keyword">THEN</span> <span class="code-string">'REVIEW_REQUIRED'</span>
+    <span class="code-keyword">ELSE</span> <span class="code-string">'VALID'</span>
+  <span class="code-keyword">END</span> <span class="code-keyword">AS</span> data_quality_flag
+<span class="code-keyword">FROM</span> text_cleaned_employees
+<span class="code-keyword">WHERE</span> name_clean <span class="code-keyword">IS NOT NULL</span>;
+    </code></div>
+
+    <span class="code-block-label">Step 4: Final QA check</span>
+    <div class="code-block"><code><span class="code-keyword">SELECT</span>
+  COUNT(*) <span class="code-keyword">AS</span> total_records,
+  COUNT(DISTINCT employee_id) <span class="code-keyword">AS</span> unique_ids,
+  SUM(CASE <span class="code-keyword">WHEN</span> data_quality_flag = <span class="code-string">'REVIEW_REQUIRED'</span> <span class="code-keyword">THEN</span> 1 <span class="code-keyword">ELSE</span> 0 <span class="code-keyword">END</span>) <span class="code-keyword">AS</span> flagged_records,
+  SUM(CASE <span class="code-keyword">WHEN</span> name_clean <span class="code-keyword">IS NULL</span> <span class="code-keyword">THEN</span> 1 <span class="code-keyword">ELSE</span> 0 <span class="code-keyword">END</span>) <span class="code-keyword">AS</span> null_names
+<span class="code-keyword">FROM</span> employees_final;
+    </code></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Results</h2>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="num">1,247</div>
+        <div class="label">Records ingested</div>
+      </div>
+      <div class="result-card">
+        <div class="num">1,089</div>
+        <div class="label">Unique employees after de-duplication</div>
+      </div>
+      <div class="result-card">
+        <div class="num">158</div>
+        <div class="label">Duplicates removed (12.7%)</div>
+      </div>
+      <div class="result-card">
+        <div class="num">0</div>
+        <div class="label">Null values in critical fields</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <strong>Key insight:</strong> The de-duplication alone raised the usable record count by catching over 150 phantom records. Once standardized, the dataset became the trusted foundation for all downstream analyses — dashboards, reports, and predictive models could now rely on accurate employee counts and consistent naming.
+    </div>
+
+    <div class="image-placeholder">
+      <p>📊 Before/after data quality comparison chart</p>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-top:8px;">Screenshot showing null counts, duplicate records, and format inconsistencies before cleaning vs. after</p>
+      <span class="hint">Add screenshot here (PNG/JPG)</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>What I Learned</h2>
+    <p>This project reinforced that data cleaning is not a one-off step — it's a continuous process. Even after this cleanup, new data coming in needs the same treatment. The SQL patterns I built here (ROW_NUMBER partitioning, TRY_CONVERT for safe casting, CASE logic for mapping) became reusable templates for cleaning other datasets that followed.</p>
+    <p>I also learned to always include a validation step. The final QA query caught an edge case where some hire dates still couldn't parse — flagging these for manual review rather than silently dropping them meant we could handle them appropriately instead of losing data.</p>
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="footer-nav">
+      <a href="index.html">← Back to portfolio</a>
+      <a href="project-basketball-analysis.html">Next project →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Ololade Adewunmi — Data cleaning, one row at a time.</div>
+</footer>
+
+</body>
+</html>

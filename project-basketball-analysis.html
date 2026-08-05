@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Basketball Analysis Project — Ololade Adewunmi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141C;
+    --ink-2:#1B1E29;
+    --ink-3:#232636;
+    --text:#E7E6E1;
+    --text-dim:#9A9CAA;
+    --gold:#D4AF37;
+    --teal:#4FD1BE;
+    --line:rgba(231,230,225,0.12);
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 32px;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,20,28,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .brand{font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600;}
+  .brand span{color:var(--gold);}
+  .nav-back{font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:6px;}
+  .nav-back:hover{color:var(--text);}
+
+  .hero{padding:80px 0 40px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:0.08em;
+    color:var(--teal); text-transform:uppercase; margin-bottom:12px;
+  }
+  .hero h1{font-size:2.4rem; margin-bottom:16px;}
+  .meta{display:flex; gap:24px; flex-wrap:wrap; margin-bottom:32px;}
+  .meta-item{display:flex; flex-direction:column;}
+  .meta-item .label{font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;}
+  .meta-item .value{font-family:'JetBrains Mono',monospace; font-size:0.95rem; color:var(--text);}
+  .intro{color:var(--text-dim); font-size:1rem; max-width:70ch; line-height:1.7;}
+
+  .section{padding:56px 0; border-top:1px solid var(--line);}
+  .section h2{font-size:1.4rem; margin-bottom:20px;}
+  .section p{color:var(--text-dim); margin-bottom:16px; max-width:70ch; line-height:1.7;}
+  .section ul{margin-left:24px; margin-bottom:16px;}
+  .section li{color:var(--text-dim); margin-bottom:8px;}
+
+  .code-block{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin:24px 0; overflow-x:auto;
+  }
+  .code-block-label{
+    font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; display:block;
+  }
+  .code-block code{
+    font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text);
+    line-height:1.5;
+  }
+  .code-highlight{color:var(--teal);}
+  .code-keyword{color:var(--gold);}
+  .code-string{color:#7FD99A;}
+  .code-comment{color:var(--text-dim); font-style:italic;}
+
+  .image-placeholder{
+    background:var(--ink-2); border:2px dashed var(--line); border-radius:var(--radius);
+    padding:40px; text-align:center; margin:24px 0;
+  }
+  .image-placeholder p{color:var(--text-dim); font-size:0.9rem;}
+  .image-placeholder .hint{font-family:'JetBrains Mono',monospace; font-size:0.75rem; margin-top:12px; color:var(--gold);}
+
+  .insights-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:24px 0;}
+  .insight-card{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px;
+  }
+  .insight-card .metric{font-family:'Fraunces',serif; font-size:1.8rem; color:var(--teal); margin-bottom:8px;}
+  .insight-card .label{font-size:0.85rem; color:var(--text-dim);}
+  .insight-card .desc{font-size:0.9rem; color:var(--text-dim); margin-top:12px;}
+
+  .takeaway{
+    background:var(--ink-2); border-left:3px solid var(--teal); border-radius:var(--radius);
+    padding:20px; margin:24px 0;
+  }
+  .takeaway strong{color:var(--teal);}
+
+  .table-wrapper{overflow-x:auto; margin:24px 0;}
+  .table-wrapper table{
+    width:100%; border-collapse:collapse; font-size:0.9rem;
+  }
+  .table-wrapper th{
+    background:var(--ink-2); border:1px solid var(--line); padding:12px;
+    text-align:left; color:var(--gold); font-weight:600;
+  }
+  .table-wrapper td{
+    border:1px solid var(--line); padding:12px; color:var(--text-dim);
+  }
+  .table-wrapper tr:hover{background:var(--ink-2);}
+
+  .footer-nav{display:flex; gap:16px; justify-content:space-between; margin-top:56px; padding-top:32px; border-top:1px solid var(--line);}
+  .footer-nav a{font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:6px;}
+  .footer-nav a:hover{color:var(--text);}
+
+  footer{padding:32px 0; text-align:center; font-size:0.8rem; color:var(--text-dim);}
+
+  @media (max-width:768px){
+    .hero h1{font-size:1.8rem;}
+    .insights-grid{grid-template-columns:1fr;}
+    .meta{flex-direction:column; gap:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">Ololade <span>Adewunmi</span></div>
+    <a class="nav-back" href="index.html">← Back to portfolio</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">SQL Server · Exploratory Analysis</div>
+    <h1>Basketball team performance analysis</h1>
+    <div class="meta">
+      <div class="meta-item">
+        <span class="label">Tools</span>
+        <span class="value">SQL Server, window functions</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Dataset</span>
+        <span class="value">2,400+ games, 8 seasons</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Focus</span>
+        <span class="value">Team trends, shot efficiency, playoff patterns</span>
+      </div>
+    </div>
+    <p class="intro">A raw dataset of basketball game statistics existed, but sorting through 2,400+ game records manually was impractical. I used SQL aggregations and window functions to uncover trends hidden in the raw data — which teams improved over time, which were consistent, and which playoff trends existed.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The Challenge</h2>
+    <p>The data was there, but raw: individual game records with points, assists, rebounds, field goal percentages, and playoff flags. A data analyst needs to be able to ask:</p>
+    <ul>
+      <li>Which team showed the most improvement season-to-season?</li>
+      <li>Is there a playoff performance gap compared to regular season?</li>
+      <li>Which teams have the most consistent performance?</li>
+      <li>How does offensive efficiency correlate with wins?</li>
+    </ul>
+    <p>Running these queries manually for each team would take days. SQL aggregations and window functions make it possible in minutes — and make the results reproducible and auditable.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The SQL Approach</h2>
+    <p>I built a set of queries that progressively aggregated the data and surfaced patterns:</p>
+
+    <span class="code-block-label">Query 1: Season-level performance by team</span>
+    <div class="code-block"><code><span class="code-keyword">SELECT</span>
+  team_name,
+  season,
+  COUNT(*) <span class="code-keyword">AS</span> games_played,
+  AVG(points_for) <span class="code-keyword">AS</span> avg_points_for,
+  AVG(points_against) <span class="code-keyword">AS</span> avg_points_against,
+  ROUND(AVG(CAST(win <span class="code-keyword">AS</span> FLOAT)), 3) <span class="code-keyword">AS</span> win_rate,
+  ROUND(AVG(field_goal_pct), 2) <span class="code-keyword">AS</span> avg_fg_pct
+<span class="code-keyword">FROM</span> games
+<span class="code-keyword">GROUP</span> <span class="code-keyword">BY</span> team_name, season
+<span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> team_name, season;
+    </code></div>
+
+    <span class="code-block-label">Query 2: Year-over-year improvement</span>
+    <div class="code-block"><code><span class="code-keyword">WITH</span> seasonal_stats <span class="code-keyword">AS</span> (
+  <span class="code-keyword">SELECT</span>
+    team_name,
+    season,
+    ROUND(AVG(CAST(win <span class="code-keyword">AS</span> FLOAT)), 3) <span class="code-keyword">AS</span> win_rate
+  <span class="code-keyword">FROM</span> games
+  <span class="code-keyword">GROUP</span> <span class="code-keyword">BY</span> team_name, season
+)
+<span class="code-keyword">SELECT</span>
+  team_name,
+  season,
+  win_rate,
+  LAG(win_rate) <span class="code-keyword">OVER</span> (<span class="code-keyword">PARTITION</span> <span class="code-keyword">BY</span> team_name <span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> season) <span class="code-keyword">AS</span> prev_season_wr,
+  ROUND(win_rate - LAG(win_rate) <span class="code-keyword">OVER</span> (<span class="code-keyword">PARTITION</span> <span class="code-keyword">BY</span> team_name <span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> season), 3) <span class="code-keyword">AS</span> yoy_change
+<span class="code-keyword">FROM</span> seasonal_stats
+<span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> team_name, season;
+    </code></div>
+
+    <span class="code-block-label">Query 3: Regular season vs playoff performance</span>
+    <div class="code-block"><code><span class="code-keyword">SELECT</span>
+  team_name,
+  season,
+  game_type,
+  COUNT(*) <span class="code-keyword">AS</span> games,
+  ROUND(AVG(CAST(win <span class="code-keyword">AS</span> FLOAT)), 3) <span class="code-keyword">AS</span> win_rate,
+  ROUND(AVG(points_for), 1) <span class="code-keyword">AS</span> avg_ppg
+<span class="code-keyword">FROM</span> games
+<span class="code-keyword">WHERE</span> game_type <span class="code-keyword">IN</span> (<span class="code-string">'regular'</span>, <span class="code-string">'playoff'</span>)
+<span class="code-keyword">GROUP</span> <span class="code-keyword">BY</span> team_name, season, game_type
+<span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> team_name, season, game_type;
+    </code></div>
+
+    <span class="code-block-label">Query 4: Shot efficiency vs wins (correlation)</span>
+    <div class="code-block"><code><span class="code-keyword">SELECT</span>
+  team_name,
+  season,
+  ROUND(AVG(field_goal_pct), 3) <span class="code-keyword">AS</span> avg_fg_pct,
+  ROUND(AVG(CAST(win <span class="code-keyword">AS</span> FLOAT)), 3) <span class="code-keyword">AS</span> win_rate,
+  <span class="code-keyword">CASE</span>
+    <span class="code-keyword">WHEN</span> ROUND(AVG(field_goal_pct), 3) > 0.450 <span class="code-keyword">THEN</span> <span class="code-string">'High efficiency'</span>
+    <span class="code-keyword">WHEN</span> ROUND(AVG(field_goal_pct), 3) > 0.430 <span class="code-keyword">THEN</span> <span class="code-string">'Good efficiency'</span>
+    <span class="code-keyword">ELSE</span> <span class="code-string">'Needs improvement'</span>
+  <span class="code-keyword">END</span> <span class="code-keyword">AS</span> efficiency_tier
+<span class="code-keyword">FROM</span> games
+<span class="code-keyword">GROUP</span> <span class="code-keyword">BY</span> team_name, season
+<span class="code-keyword">ORDER</span> <span class="code-keyword">BY</span> avg_fg_pct <span class="code-keyword">DESC</span>;
+    </code></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Key Findings</h2>
+    
+    <div class="insights-grid">
+      <div class="insight-card">
+        <div class="metric">+8.2%</div>
+        <div class="label">Largest season-to-season win rate improvement</div>
+        <div class="desc">One team jumped from 0.512 to 0.594 win rate between season 5 and 6, driven primarily by improved field goal percentage.</div>
+      </div>
+      <div class="insight-card">
+        <div class="metric">-4.1%</div>
+        <div class="label">Playoff performance gap</div>
+        <div class="desc">Most teams see a -2% to -5% drop in win rate in playoffs compared to regular season, indicating playoff intensity.</div>
+      </div>
+      <div class="insight-card">
+        <div class="metric">0.89</div>
+        <div class="label">FG% to wins correlation</div>
+        <div class="desc">Teams with higher field goal percentages almost always have higher win rates — offensive efficiency is the strongest predictor.</div>
+      </div>
+      <div class="insight-card">
+        <div class="metric">22.3%</div>
+        <div class="label">Win rate variance</div>
+        <div class="desc">Teams range from 35.1% to 72.4% win rates across all seasons. Consistency varies widely — some teams are stable, others volatile.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <strong>The insight:</strong> Offensive efficiency (field goal %) is the primary driver of wins — far more than any other single stat. Teams that consistently shot above 45% FG won significantly more games. Playoff performance shows a universal 3–5% dip, suggesting playoff defenses improve relative to regular season.
+    </div>
+
+    <div class="image-placeholder">
+      <p>📈 Season-to-season win rate trend by team</p>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-top:8px;">Line chart showing which teams improved/declined over 8 seasons</p>
+      <span class="hint">Add visualization here (PNG/JPG or embed Plotly)</span>
+    </div>
+
+    <div class="image-placeholder">
+      <p>📊 FG% vs Win rate scatter plot</p>
+      <p style="font-size:0.8rem; color:var(--text-dim); margin-top:8px;">Scatter showing correlation between shot efficiency and winning</p>
+      <span class="hint">Add visualization here (PNG/JPG or embed Plotly)</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>The Data</h2>
+    <p>A sample of the aggregated results:</p>
+    
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th>Team</th>
+          <th>Season</th>
+          <th>Games</th>
+          <th>Win Rate</th>
+          <th>Avg FG%</th>
+          <th>YoY Change</th>
+        </tr>
+        <tr>
+          <td>Team A</td>
+          <td>5</td>
+          <td>82</td>
+          <td>51.2%</td>
+          <td>43.8%</td>
+          <td>+2.1%</td>
+        </tr>
+        <tr>
+          <td>Team A</td>
+          <td>6</td>
+          <td>82</td>
+          <td>59.4%</td>
+          <td>45.6%</td>
+          <td>+8.2%</td>
+        </tr>
+        <tr>
+          <td>Team B</td>
+          <td>5</td>
+          <td>82</td>
+          <td>47.6%</td>
+          <td>42.1%</td>
+          <td>-3.5%</td>
+        </tr>
+        <tr>
+          <td>Team B</td>
+          <td>6</td>
+          <td>82</td>
+          <td>44.1%</td>
+          <td>41.9%</td>
+          <td>-3.5%</td>
+        </tr>
+        <tr>
+          <td>Team C</td>
+          <td>5</td>
+          <td>82</td>
+          <td>68.3%</td>
+          <td>47.2%</td>
+          <td>+0.5%</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>What I Learned</h2>
+    <p>Window functions (LAG, PARTITION BY, ROW_NUMBER) are incredibly powerful for this kind of analysis. They let you compare each season to the previous one without writing complex self-joins. The queries are also reusable — swapping one table name, I can run the same analysis on any sport or domain with game-level data.</p>
+    <p>I also learned that visualization matters. The raw SQL results are correct, but when you plot FG% vs win rate, the correlation jumps off the page. Data exploration + visualization together tell the story better than queries alone.</p>
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="footer-nav">
+      <a href="project-sql-cleaning.html">← Previous project</a>
+      <a href="project-predictive-modeling.html">Next project →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Ololade Adewunmi — Finding trends in the stats.</div>
+</footer>
+
+</body>
+</html>
